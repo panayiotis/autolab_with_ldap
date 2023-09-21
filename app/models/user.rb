@@ -9,7 +9,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable
 
-  devise :omniauthable, omniauth_providers: [:shibboleth]
+  devise :omniauthable, omniauth_providers: [:ldap]
 
   has_many :course_user_data, dependent: :destroy
   has_many :courses, through: :course_user_data
@@ -95,6 +95,12 @@ class User < ApplicationRecord
 
   def self.find_for_shibboleth_oauth(auth, _signed_in_resource = nil)
     authentication = Authentication.find_by(provider: "CMU-Shibboleth",
+                                            uid: auth.uid)
+    return authentication.user if authentication&.user
+  end
+  
+  def self.find_for_ldap_oauth(auth, _signed_in_resource = nil)
+    authentication = Authentication.find_by(provider: "ldap",
                                             uid: auth.uid)
     return authentication.user if authentication&.user
   end

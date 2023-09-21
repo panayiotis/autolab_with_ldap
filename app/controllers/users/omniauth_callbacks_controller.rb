@@ -49,31 +49,38 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   end
 
-  def shibboleth
+  def ldap
+    puts "📍omniauth_callbacks_controller.rb: ldap"
     if user_signed_in?
       if data = request.env["omniauth.auth"]
-        if current_user.authentications.where(provider: "CMU-Shibboleth",
+        if current_user.authentications.where(provider: "ldap",
                                               uid: data["uid"]).empty?
-          current_user.authentications.create(provider: "CMU-Shibboleth",
+          current_user.authentications.create(provider: "ldap",
                                               uid: data["uid"])
         end
       end
       redirect_to root_path
     else
-      @user = User.find_for_shibboleth_oauth(request.env["omniauth.auth"], current_user)
+      @user = User.find_for_ldap_oauth(request.env["omniauth.auth"], current_user)
 
       if @user
         sign_in_and_redirect @user, event: :authentication # this will throw if @user is not activated
-        set_flash_message(:notice, :success, kind: "Shibboleth") if is_navigational_format?
+        set_flash_message(:notice, :success, kind: "LDAP") if is_navigational_format?
       else
         # Skip sign up for CMU Shibboleth user
         data = request.env["omniauth.auth"]
         @user = User.where(email: data["uid"]).first # email is uid in our case
 
         # If user doesn't exist, create one first
+        puts "📍If user doesn't exist, create one first"
+        puts "ldap info: ", data.info.to_h
+
         if @user.nil?
           @user = User.new
-          @user.email = data["uid"]
+          @user.email = data.info["email"]
+          @user.first_name = data.info["name"].split(" ")[0]
+          @user.last_name = data.info["last_name"]
+          puts "atempt to create user: ", @user
 
           # Set user info based on LDAP lookup
           if @user.email.include? "@andrew.cmu.edu"
@@ -98,11 +105,11 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
         end
 
-        @user.authentications.new(provider: "CMU-Shibboleth",
+        @user.authentications.new(provider: "ldap",
                                   uid: data["uid"])
         @user.save!
         sign_in_and_redirect @user, event: :authentication # this will throw if @user is not activated
-        set_flash_message(:notice, :success, kind: "Shibboleth") if is_navigational_format?
+        set_flash_message(:notice, :success, kind: "LDAP") if is_navigational_format?
       end
     end
   end

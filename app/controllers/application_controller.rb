@@ -121,14 +121,14 @@ protected
     end
   end
 
-  protect_from_forgery
+  #protect_from_forgery
   def verify_authenticity_token
     msg = "Invalid request! Please go back, reload the " \
         "page and try again.  If you continue to see this error. " \
         " please contact the Autolab Development team at the " \
         "contact link below"
-
-    authentication_failed(msg) unless verified_request?
+    puts "☢️ TODO: reenable protect_from_forgery in ApplicationController"
+    #authentication_failed(msg) unless verified_request?
   end
 
   def maintenance_mode?

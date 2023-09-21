@@ -228,6 +228,15 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', :scope => 'user,public_repo'
+  # https://github.com/omniauth/omniauth-ldap
+  config.omniauth :ldap,
+    :host => 'ldap.forumsys.com',
+    :port => 389,
+    :method => :plain,
+    :uid=> 'uid',
+    :base => 'dc=example,dc=com',
+    :bind_dn =>'cn=read-only-admin,dc=example,dc=com',
+    :password => 'password'
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
