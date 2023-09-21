@@ -1,0 +1,5 @@
+# Sqlite3 Configuration
+development:
+  adapter: sqlite3
+  database: autolab_development
+  pool: 5

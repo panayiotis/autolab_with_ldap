@@ -217,7 +217,6 @@ GEM
       railties (>= 3.1)
     multi_json (1.15.0)
     multi_xml (0.6.0)
-    mysql2 (0.4.10)
     net-ldap (0.17.1)
     newrelic_rpm (8.8.0)
     nio4r (2.5.8)
@@ -470,7 +469,6 @@ DEPENDENCIES
   mini_racer (~> 0.6.3)
   moment_timezone-rails
   momentjs-rails (>= 2.9.0)
-  mysql2 (~> 0.4.10)
   net-ldap
   newrelic_rpm
   oauth2
